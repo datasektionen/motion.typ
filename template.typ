@@ -15,7 +15,7 @@
   body,
 ) = {
   if full_title.len() == 0 {
-    full_title = [#type angående #title]
+    full_title = [#type angående\ #title]
   }
   
   set text(lang: "sv")
