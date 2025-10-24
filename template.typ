@@ -6,6 +6,7 @@
   role: "",
   coauthors: (),
   type: "Proposition",
+  type_header: "",
   title: "",
   full_title: "",
   date: none,
@@ -14,7 +15,7 @@
   draft: false,
   body,
 ) = {
-  if full_title.len() == 0 {
+  if full_title == "" {
     full_title = [#type angående\ #title]
   }
   
@@ -55,7 +56,7 @@
       #grid(
         columns: (1fr, 5cm, 1fr),
         // date -> gray
-        align(left + horizon, [#type till #sm \ #set text(datagray); #date]),
+        align(left + horizon, [#if type_header == "" {type} else {type_header} till #sm \ #set text(datagray); #date]),
         align(center + horizon, image(
           "pictures/dsekt.svg",
           width: 1.5cm,
@@ -73,8 +74,9 @@
     ],
   )
 
-  // Draft
-  set page(foreground: rotate(60deg, text(230pt, fill: gray.transparentize(80%), [#set par(justify: false); UTKAST]))) if draft
+  // Draft. Should be in the foreground, but that interferes with typst.apps
+  // ability to locate places in the code from the preview.
+  set page(background: rotate(60deg, text(230pt, fill: gray.transparentize(60%), [#set par(justify: false); UTKAST]))) if draft
 
   align(center, heading[#full_title])
   

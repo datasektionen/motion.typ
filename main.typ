@@ -3,35 +3,47 @@
 
 // Ändra dessa parametrar:
 
-// Sätt organ till "" om motion eller inget organ
-#let organ = "D-rektoratet"
+// Sätt organ till "" i nästan alla fall.
+#let organ = ""
 #let author = "<författare>"
 #let role = "<ämbete>"
-// Medförfattare. Separera namn och ämbete med komma likt exemplet nedan
+// Medförfattare. Separera namn och ämbete med komma likt exemplet nedan.
 #let coauthors = ()
 //#let coauthors = ("Ture Teknolog, gammal och vis", "Tjomme Tjommolog, ung och dum")
-#let type = "Proposition"
 
-#let title = "Införande av statlig övervakning"
+#let type = "Motion"
+#let title = "Bokstavligen 1984"
+// Om dokumenttypen i sidhuvudet ska skilja sig från det i titeln. Bör typ
+// endast användas för motionssvar, där sidhuvudet är "Motionssvar" medan titeln
+// är "Svar på motion" likt exemplet nedan.
+#let type_header = ""
+//#let type_header = "Motionssvar"
+
 #let sm = "Bar-SM"
+// Mötets datum
+#let date = datetime(year: 2069, month: 4, day: 20)
 #let memebild = image("pictures/anka.png", width: 10cm)
 
-// Ändra dessa parametrar om du är modig:
+// Om dokumentet är ett utkast.
+#let draft = true
+
+// Fippla med dessa parametrar om du är modig:
 #show: project.with(
   organ: organ,
   author: author,
   role: role,
   coauthors: coauthors,
   type: type,
+  type_header: type_header,
   title: title,
-  //full_title: "<byt ut titeln helt om du vill>",
-  date: datetime.today().display(),
+  date: date.display(),
   sm: sm,
   meme: align(center, memebild),
-  draft: false,
+  draft: draft,
 )
 
-// Skriv här:
+// `utils.typ` har en del hjälpfunktioner som kan vara bra att känna till!
+// Annars, skriv här:
 == Bakgrund
 
 #lorem(50)
@@ -40,10 +52,10 @@
 
 Mot bakgrund av ovanstående yrkar #if organ.len() == 0 {author} else {organ} på
 
-#att[avsätta #num(50000) kr för inköp av övervakningskameror]
+#att_avsätta(50000, "inköp av övervakningskameror")
 
 #att_styrdok_läggtillp(styrdok.sta, "§1.2 Ändamål", [
-  - övervaka sektionens medlemmar till vardags
+  - övervaka sektionens medlemmar till vardags.
 ])
 
 #att_styrdok_läggtill(styrdok.reg, [
@@ -52,8 +64,7 @@ Mot bakgrund av ovanstående yrkar #if organ.len() == 0 {author} else {organ} p�
   #lorem(50)
 ])
 
-
-#att_styrdok_ändra(styrdok.reg, "§8.1.1", [
+#att_styrdok_ändra(styrdok.reg, "§3.3.1 Ordförande", [
   Är ledamot i sektionsstyrelsen, D-rektoratet. Arbetsleder D-rektoratet och företräder organisationen utåt. Är firmatecknare tillsammans med kassören. Har det övergripande ansvaret för sektionens avtalshantering och serveringstillstånd. Ansvarar även för att det upprättas en verksamhetsberättelse varje år som talar #strike[om vad som hänt] under året. Denna verksamhetsberättelse ska, åtminstone, innehålla en verksamhetsberättelse från varje bokföringspliktig nämnd och organ.
 ], [
   Är ledamot i sektionsstyrelsen, D-rektoratet. Arbetsleder D-rektoratet och företräder organisationen utåt. Är firmatecknare tillsammans med kassören. Har det övergripande ansvaret för sektionens avtalshantering och serveringstillstånd. Ansvarar även för att det upprättas en verksamhetsberättelse varje år som talar *illa om alla medlemmar som inte betett sig* under året. Denna verksamhetsberättelse ska, åtminstone, innehålla en verksamhetsberättelse från varje bokföringspliktig nämnd och organ.
@@ -61,4 +72,4 @@ Mot bakgrund av ovanstående yrkar #if organ.len() == 0 {author} else {organ} p�
 
 #att_konsnum()
 
-#att[Storebror och/eller Storasyster ser dig]
+#att[Storebror och/eller Storasyster ser dig.]
