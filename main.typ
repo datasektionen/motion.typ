@@ -50,7 +50,7 @@
 
 == Förslag till beslut
 
-Mot bakgrund av ovanstående yrkar #if organ.len() == 0 {author} else {organ} på
+Mot bakgrund av ovanstående yrkar #if organ.len() != 0 {organ} else if coauthors.len() != 0 [vi] else [jag] på
 
 #att_avsätta(50000, "inköp av övervakningskameror")
 
