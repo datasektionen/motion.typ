@@ -46,6 +46,15 @@
 // Annars, skriv här:
 == Bakgrund
 
+// Rim för Glögg-SM
+//#align(center, text(style: "italic")[
+//  Rim, rim, rim, \
+//  jag älskar rim.
+//
+//  Jul, jul, jul, \
+//  tomten är ful.
+//])
+
 #lorem(50)
 
 == Förslag till beslut
