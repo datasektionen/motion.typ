@@ -3,11 +3,6 @@
 
 /***** Allmäna hjälpfunktioner *****/
 
-/// Gör fina cerise länkar.
-#let cerise_link(l, t) = {
-  link(l, text(fill: cerise, [*#t*]))
-}
-
 /**
  * Formatterar nummer snyggt och läsligt. Exempelvis för motioner om att avsätta
  * pengar.
@@ -152,7 +147,7 @@
 #let styrdok = (
   reg: "reglementet",
   sta: "stadgarna",
-  nof: "Styrdokument för Nämnder och Funktionärer",
+  ver: "Verksamhetsregistret",
   jml: "Jämlikhetspolicyn",
   kli: "Klimatpolicyn",
   rek: "Rekryteringspolicyn",
@@ -167,7 +162,7 @@
     par: "PM för partitioner",
     sti: "PM för stipendier",
     tra: "PM för traditioner, vanor, och livsregler",
-  )
+  ),
 )
 
 /// Kortkommandom för sektionens alla organ.
