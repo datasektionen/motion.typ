@@ -63,7 +63,9 @@
         )),
         align(right + horizon, text(datagray)[
           #if organ.len() == 0 {author} else {organ} \
-          #context counter(page).display("1/1", both: true)
+          #context [
+            sida #counter(page).display("1") av #counter(page).final().at(0)
+          ]
         ]),
       )
     ],

@@ -7,14 +7,18 @@
  * Formatterar nummer snyggt och läsligt. Exempelvis för motioner om att avsätta
  * pengar.
  */
-#let num(n) = {
+#let num(n, boxed: true) = {
   let neg = n < 0
   let int = calc.abs(calc.trunc(n))
   // calc.fract har en tendens att trolla bort precision av någon anledning
   let fract = if calc.fract(n) != 0 {str(n).split(".").at(1)}
   let res = str(int).clusters().rev().chunks(3).map(c => c.join("")).join(math.space.narrow).rev()
-  return if neg {$-$} + $res$ + if fract != none {$.fract$}
+  let out = if neg {$-$} + $res$ + if fract != none {$,fract$}
+  return if boxed { box(out) } else { out }
 }
+
+/// Som num, fast lägger till kr efter.
+#let numkr(n) = [#num(n)~kr]
 
 /// Ritar lådor runt text. Främst för styrdokument.
 #let styrdok_box(text) = {
@@ -33,6 +37,7 @@
  * - Argument som heter `body` bör vara av typen content (alltså skrivas
  *   innanför []) för att kunna inkludera formattering som rubriker.
  * - Argument som heter `paragraf` bör vara av formen "§X.Y.Z Rubrik"
+ * - Argument som heter `post` bör vara av formen "Resultatställe > Sek. resultats. > Post"
  * - Argument som heter `dok` bör använda styrdokumentsförkortningarna i
  *   avsnittet om förkortningar nedan. Exempelvis
  *   #att_styrdok_läggtill(styrdok.reg, [hej])
@@ -50,10 +55,43 @@
   attCount.step()
 }
 
+/***** Budgetfippel *****/
+
+#let __bud_år(år) = if år != none [i budgeten för #år ] else []
+
 /// Avsätta pengar för en engångskostnad
 #let att_avsätta(kr, syfte) = {
-  att[avsätta #num(kr) kr för #syfte.]
+  att[avsätta #numkr(kr) för #syfte.]
 }
+
+#let att_bud_anta(rs, år: none) = {
+  let årtext = __bud_år(år)
+  att[#årtext;anta den bifogade budgeten för _#rs;_.]
+}
+
+#let att_bud_ändra(post, från, till, år: none) = {
+  let verb = if calc.abs(till) > calc.abs(från) [höja] else [sänka]
+  let diff = till - från
+  let year = __bud_år(år)
+  att[#year#verb _#post;_ med #numkr(diff) från #numkr(från) till #numkr(till).]
+}
+
+#let att_bud_läggtill(post, kr, år: none) = {
+  let årtext = __bud_år(år)
+  att[#årtext;skapa budgetposten _#post;_ på #numkr(kr).]
+}
+
+#let att_bud_stryk(post, år: none) = {
+  let årtext = __bud_år(år)
+  att[#årtext;stryka budgetposten _#post;_.]
+}
+
+#let att_bud_bytnamn(post, till, år: none) = {
+  let årtext = __bud_år(år)
+  att[#årtext;byta namn på _#post;_ till _#till;_.]
+}
+
+/***** Styrdokumentsfippel *****/
 
 /**
  * Lägger till något löst i ett styrdokument. `body` bör inkludera en eller
@@ -129,10 +167,14 @@
   }
 }
 
+/***** Motionssvarsfippel *****/
+
 /// Hjälpfunktioner för att avsluta motionssvar.
 #let att_ms_bifall() = att[bifalla motionen i sin helhet.]
 #let att_ms_ändring() = att[bifalla motionen med ovanstående ändringar.]
 #let att_ms_avslag() = att[avslå motionen.]
+
+/***** Övrigt fippel *****/
 
 /// Att-sats för konsekvensnumrering.
 #let att_konsnum() = att[konsekvensnumrera styrdokumenten.]

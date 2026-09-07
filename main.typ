@@ -63,6 +63,8 @@ Mot bakgrund av ovanstående yrkar #if organ.len() != 0 {organ} else if coauthor
 
 #att_avsätta(50000, "inköp av övervakningskameror")
 
+#att_bud_anta("Övervakningsgruppen")
+
 #att_styrdok_läggtillp(styrdok.sta, "§1.2 Ändamål", [
   - övervaka sektionens medlemmar till vardags.
 ])
