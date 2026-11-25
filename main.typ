@@ -57,6 +57,8 @@
 
 #lorem(50)
 
+@Tala-illa är min favorit, men @storasyskon är också ganska bra.
+
 == Förslag till beslut
 
 Mot bakgrund av ovanstående yrkar #if organ.len() != 0 {organ} else if coauthors.len() != 0 [vi] else [jag] på
@@ -75,7 +77,7 @@ Mot bakgrund av ovanstående yrkar #if organ.len() != 0 {organ} else if coauthor
   #lorem(50)
 ])
 
-#att_styrdok_ändra(styrdok.reg, "§3.3.1 Ordförande", [
+#att_styrdok_ändra(namn: "tala-illa", styrdok.reg, "§3.3.1 Ordförande", [
   Är ledamot i sektionsstyrelsen, D-rektoratet. Arbetsleder D-rektoratet och företräder organisationen utåt. Är firmatecknare tillsammans med kassören. Har det övergripande ansvaret för sektionens avtalshantering och serveringstillstånd. Ansvarar även för att det upprättas en verksamhetsberättelse varje år som talar #strike[om vad som hänt] under året. Denna verksamhetsberättelse ska, åtminstone, innehålla en verksamhetsberättelse från varje bokföringspliktig nämnd och organ.
 ], [
   Är ledamot i sektionsstyrelsen, D-rektoratet. Arbetsleder D-rektoratet och företräder organisationen utåt. Är firmatecknare tillsammans med kassören. Har det övergripande ansvaret för sektionens avtalshantering och serveringstillstånd. Ansvarar även för att det upprättas en verksamhetsberättelse varje år som talar *illa om alla medlemmar som inte betett sig* under året. Denna verksamhetsberättelse ska, åtminstone, innehålla en verksamhetsberättelse från varje bokföringspliktig nämnd och organ.
@@ -83,4 +85,4 @@ Mot bakgrund av ovanstående yrkar #if organ.len() != 0 {organ} else if coauthor
 
 #att_konsnum()
 
-#att[Storebror och/eller Storasyster ser dig.]
+#att(namn: "storasyskon")[Storebror och/eller Storasyster ser dig.]

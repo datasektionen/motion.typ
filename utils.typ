@@ -36,20 +36,44 @@
  * Lite allmän info som gäller för nästan alla funktioner här:
  * - Argument som heter `body` bör vara av typen content (alltså skrivas
  *   innanför []) för att kunna inkludera formattering som rubriker.
- * - Argument som heter `paragraf` bör vara av formen "§X.Y.Z Rubrik"
+ * - Argument som heter `paragraf` bör vara av formen "§X.Y.Z Rubrik", eller om
+ *   man vill vara extra tydlig vid underparagrafer kan man skriva "§X.Y Rubrik
+ *   > Underrubrik" eller liknande.
  * - Argument som heter `post` bör vara av formen "Resultatställe > Sek. resultats. > Post"
  * - Argument som heter `dok` bör använda styrdokumentsförkortningarna i
  *   avsnittet om förkortningar nedan. Exempelvis
- *   #att_styrdok_läggtill(styrdok.reg, [hej])
+ *   #att_styrdok_läggtill(styrdok.reg)[hej]
+ * - Argument som heter `namn` bör vara i gemene bokstäver och kan användas för
+ *   att referrera till att-satsen i bakgrunden via @namn. @Namn kan användas i
+ *   början av meningar. Det ska finnas på alla att-funktioner.
  */
 
 #let attCount = counter("att")
+
+// Fippel för att hantera referenser
+#let __att_fig_kind = "att-figure"
+#let __att_fig = figure.with(none, outlined: false, kind: __att_fig_kind)
+#let __att_fig_num() = context {
+  counter(figure.where(kind: __att_fig_kind)).update(attCount.get().at(0) - 1)
+}
+#let __att_label(supplement, namn) = [
+  #__att_fig_num()
+  #__att_fig(supplement: supplement) #label(namn)
+]
+
 /// Allmän att-sats. Autonumrerar från noll.
-#let att(it) = {
+#let att(it, namn: none) = context {
   grid(
-    columns: (auto, 1fr),
-    gutter: 1em,
-    [#h(1em)*att*#sub(context{attCount.display()})],
+    // Fippel för att referenserna inte ska ta vertikal plats
+    columns: (auto, )*4 + (1fr, ),
+    if namn != none [
+      #let vnamn = upper(namn.first()) + namn.slice(1)
+      #__att_label("att-sats", namn)
+      #__att_label("Att-sats", vnamn)
+    ],
+    h(1em),
+    [*att*#sub(attCount.display())],
+    h(1em),
     [#it]
   )
   attCount.step()
@@ -60,35 +84,35 @@
 #let __bud_år(år) = if år != none [i budgeten för #år ] else []
 
 /// Avsätta pengar för en engångskostnad
-#let att_avsätta(kr, syfte) = {
-  att[avsätta #numkr(kr) för #syfte.]
+#let att_avsätta(kr, syfte, ..kw) = {
+  att(..kw)[avsätta #numkr(kr) för #syfte.]
 }
 
-#let att_bud_anta(rs, år: none) = {
+#let att_bud_anta(rs, år: none, ..kw) = {
   let årtext = __bud_år(år)
-  att[#årtext;anta den bifogade budgeten för _#rs;_.]
+  att(..kw)[#årtext;anta den bifogade budgeten för _#rs;_.]
 }
 
-#let att_bud_ändra(post, från, till, år: none) = {
+#let att_bud_ändra(post, från, till, år: none, ..kw) = {
   let verb = if calc.abs(till) > calc.abs(från) [höja] else [sänka]
   let diff = till - från
   let year = __bud_år(år)
-  att[#year#verb _#post;_ med #numkr(diff) från #numkr(från) till #numkr(till).]
+  att(..kw)[#year#verb _#post;_ med #numkr(diff) från #numkr(från) till #numkr(till).]
 }
 
-#let att_bud_läggtill(post, kr, år: none) = {
+#let att_bud_läggtill(post, kr, år: none, ..kw) = {
   let årtext = __bud_år(år)
-  att[#årtext;skapa budgetposten _#post;_ på #numkr(kr).]
+  att(..kw)[#årtext;skapa budgetposten _#post;_ på #numkr(kr).]
 }
 
-#let att_bud_stryk(post, år: none) = {
+#let att_bud_stryk(post, år: none, ..kw) = {
   let årtext = __bud_år(år)
-  att[#årtext;stryka budgetposten _#post;_.]
+  att(..kw)[#årtext;stryka budgetposten _#post;_.]
 }
 
-#let att_bud_bytnamn(post, till, år: none) = {
+#let att_bud_bytnamn(post, till, år: none, ..kw) = {
   let årtext = __bud_år(år)
-  att[#årtext;byta namn på _#post;_ till _#till;_.]
+  att(..kw)[#årtext;byta namn på _#post;_ till _#till;_.]
 }
 
 /***** Styrdokumentsfippel *****/
@@ -97,21 +121,21 @@
  * Lägger till något löst i ett styrdokument. `body` bör inkludera en eller
  * flera rubriker.
  */
-#let att_styrdok_läggtill(dok, body) = {
-  att[
+#let att_styrdok_läggtill(dok, body, ..kw) = {
+  att(..kw)[
     i #dok lägga till
     #styrdok_box(body)
   ]
 }
 
 /// Lägger till något under en given paragraf i ett styrdokument.
-#let att_styrdok_läggtillp(dok, paragraf, body) = {
-  att_styrdok_läggtill([#dok;s _#paragraf;_], body)
+#let att_styrdok_läggtillp(dok, paragraf, body, ..kw) = {
+  att_styrdok_läggtill([#dok;s _#paragraf;_], body, ..kw)
 }
 
 /// Byter ut innehållet i en paragraf i sin helhet med något annat.
-#let att_styrdok_bytut(dok, paragraf, body) = {
-  att[
+#let att_styrdok_bytut(dok, paragraf, body, ..kw) = {
+  att(..kw)[
     i #dok byta ut _#paragraf;_ i sin helhet med
     #styrdok_box(body)
   ]
@@ -123,8 +147,8 @@
  * fetstilta för att göra det mer lättläst. Ett exempel finns i mallens
  * `main.typ`.
  */
-#let att_styrdok_ändra(dok, paragraf, från, till) = {
-  att[
+#let att_styrdok_ändra(dok, paragraf, från, till, ..kw) = {
+  att(..kw)[
     ändra _#paragraf;_ i #dok från
     #styrdok_box(från)
     till\
@@ -133,8 +157,8 @@
 }
 
 /// Stryker någonting i en given paragraf.
-#let att_styrdok_stryk(dok, paragraf, body) = {
-  att[
+#let att_styrdok_stryk(dok, paragraf, body, ..kw) = {
+  att(..kw)[
     i #dok;s _#paragraf;_ stryka
     #styrdok_box(body)
   ]
@@ -144,13 +168,13 @@
  * Stryker någonting i en given paragraf utan att rita en låda. Effektivt om
  * många små saker stryks.
  */
-#let att_styrdok_strykkort(dok, paragraf, body) = {
-  att[i #dok;s _#paragraf;_ stryka "#body".]
+#let att_styrdok_strykkort(dok, paragraf, body, ..kw) = {
+  att(..kw)[i #dok;s _#paragraf;_ stryka "#body".]
 }
 
 /// Stryker en paragraf i sin helhet.
-#let att_styrdok_strykp(dok, paragraf) = {
-  att[stryka _#paragraf;_ i #dok.]
+#let att_styrdok_strykp(dok, paragraf, ..kw) = {
+  att(..kw)[stryka _#paragraf;_ i #dok.]
 }
 
 /**
@@ -159,25 +183,25 @@
  * vilket fall det kan tolkas som en omdöpning från `paragraf1` till
  * `paragraf2`.
  */
-#let att_styrdok_flytta(dok, paragraf1, preposition, paragraf2) = {
+#let att_styrdok_flytta(dok, paragraf1, preposition, paragraf2, ..kw) = {
   if preposition == "" {
-    att[i #dok flytta _#paragraf1;_ till _#paragraf2;_.]
+    att(..kw)[i #dok flytta _#paragraf1;_ till _#paragraf2;_.]
   } else {
-    att[i #dok flytta _#paragraf1;_ till #preposition _#paragraf2;_.]
+    att(..kw)[i #dok flytta _#paragraf1;_ till #preposition _#paragraf2;_.]
   }
 }
 
 /***** Motionssvarsfippel *****/
 
 /// Hjälpfunktioner för att avsluta motionssvar.
-#let att_ms_bifall() = att[bifalla motionen i sin helhet.]
-#let att_ms_ändring() = att[bifalla motionen med ovanstående ändringar.]
-#let att_ms_avslag() = att[avslå motionen.]
+#let att_ms_bifall = att.with[bifalla motionen i sin helhet.]
+#let att_ms_ändring = att.with[bifalla motionen med ovanstående ändringar.]
+#let att_ms_avslag = att.with[avslå motionen.]
 
 /***** Övrigt fippel *****/
 
 /// Att-sats för konsekvensnumrering.
-#let att_konsnum() = att[konsekvensnumrera styrdokumenten.]
+#let att_konsnum = att.with[konsekvensnumrera styrdokumenten.]
 
 
 /***** Förkortningar för vanliga textsnuttar *****/
